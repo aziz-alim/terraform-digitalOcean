@@ -34,8 +34,15 @@ Süreçlerin net ayrımı (Separation of Concerns) adına Terraform ve Ansible y
 
 ## Kurulum ve Dağıtım Adımları
 
-### 1. Adım: Bulut Altyapısının Oluşturulması (Terraform)
-`terraform-do` klasörüne geçiş yapın ve DigitalOcean API token bilginizi `main.tf` içerisine ekledikten sonra şu komutları sırayla çalıştırın:
+### 1. Adım: Güvenlik ve Kimlik Doğrulama
+Güvenlik standartları (Secret Management) gereği DigitalOcean API token bilgisi koda (hardcoded) yazılmamalıdır. İşleme başlamadan önce token bilgisini sisteminize ortam değişkeni (environment variable) olarak tanımlayın:
+
+```bash
+export TF_VAR_do_token="BURAYA_DIGITALOCEAN_API_TOKEN_GELECEK"
+```
+
+### 2. Adım: Bulut Altyapısının Oluşturulması (Terraform)
+`terraform-do` klasörüne geçiş yapın ve altyapıyı ayağa kaldırmak için şu komutları sırayla çalıştırın:
 
 ```bash
 # Eklentileri indir ve projeyi başlat
@@ -49,7 +56,7 @@ terraform apply
 ```
 Kurulum tamamlandığında Terraform terminal ekranına sunucunun halka açık yeni IP adresini (`server_ip`) yazdıracaktır.
 
-### 2. Adım: Sunucu Yapılandırması ve Canlıya Alma (Ansible)
+### 3. Adım: Sunucu Yapılandırması ve Canlıya Alma (Ansible)
 Terraform'un ürettiği IP adresini `ansible-infra/inventory.ini` dosyasına ekleyin. Eğer aynı IP adresiyle daha önce başka bir sunucuya bağlandıysanız, yerel makinenizdeki eski SSH kimlik kaydını temizleyin:
 
 ```bash
@@ -66,6 +73,7 @@ ansible-playbook setup.yml -i inventory.ini --tags "nginx,app"
 
 ## DevOps Best Practices ve Kazanımlar
 
+- **Secret Management (Gizli Veri Yönetimi):** API anahtarları veya hassas bilgiler kod içinde tutulmaz; ortam değişkenleri kullanılarak güvenli bir şekilde aktarılır ve olası sızıntıların önüne geçilir.
 - **Idempotency:** Yazılan kodlar tekrar tekrar çalıştırılabilir. Sunucu zaten istenen durumdaysa hiçbir kaynağa zarar verilmez veya gereksiz paket kurulmaz.
 - **Modüler Yapı:** Sunucuyu açan katman (Terraform) ile sunucuyu yöneten katman (Ansible) tamamen birbirinden ayrılmıştır; bulut sağlayıcısı değiştirilse bile Ansible rolleri aynen korunabilir.
 - **Güvenli Erişim:** Sunucuya şifre ile girişler kapatılmış, erişim yalnızca belirli bir SSH Private Key mimarisi ve MD5 parmak izi (fingerprint) doğrulaması üzerinden yapılandırılmıştır.
