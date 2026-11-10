@@ -82,5 +82,5 @@ ansible-playbook setup.yml -i inventory.ini --tags "nginx,app"
 
 ## Geliştirici
 
-- **Aziz Mevlana Alim** - [GitHub](https://github.com/aziz-mevlana) - [Roadmap](https://github.com/aziz-mevlana](https://roadmap.sh/projects/iac-digitalocean))
+- **Aziz Alim** - [GitHub](https://github.com/aziz-alim) - [Roadmap](https://roadmap.sh/projects/iac-digitalocean)
 
